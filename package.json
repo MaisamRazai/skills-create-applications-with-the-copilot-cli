@@ -4,8 +4,12 @@
   "description": "Exercise repo: Node.js CLI calculator",
   "main": "src/calculator.js",
   "scripts": {
-    "test": "node test/calculator.test.js"
+    "test": "mocha --recursive 'src/tests/**/*.test.js'"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^6.2.2",
+    "mocha": "^11.7.6"
+  }
 }
