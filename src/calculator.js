@@ -9,6 +9,9 @@
  *  - Subtraction:    -
  *  - Multiplication: * or x (×)
  *  - Division:       / or ÷
+ *  - Modulo:         % or mod
+ *  - Exponentiation: ^ or pow
+ *  - Square root:    sqrt (unary)
  *
  * This file exports functions for the four basic operations and also
  * provides a CLI entry point that accepts either:
@@ -43,19 +46,47 @@ function divide(a, b) {
   return a / b;
 }
 
+function modulo(a, b) {
+  // modulo: remainder of a divided by b
+  if (b === 0) {
+    const err = new Error('Division by zero');
+    err.code = 'DIV_BY_ZERO';
+    throw err;
+  }
+  return a % b;
+}
+
+function power(base, exponent) {
+  // exponentiation: base ** exponent
+  return Math.pow(base, exponent);
+}
+
+function squareRoot(n) {
+  // squareRoot: returns sqrt(n); error on negative inputs
+  if (n < 0) {
+    const err = new Error('Square root of negative number');
+    err.code = 'NEG_SQRT';
+    throw err;
+  }
+  return Math.sqrt(n);
+}
+
 // Export functions for programmatic use
 module.exports = {
   add,
   subtract,
   multiply,
   divide,
+  modulo,
+  power,
+  squareRoot,
 };
 
 // ----- CLI handling -----
 function printUsage() {
   console.error('Usage: node src/calculator.js <number> <operator> <number>');
   console.error('       node src/calculator.js --a <number> --op <operator> --b <number>');
-  console.error('Operators: +  -  *  x  /  ÷');
+  console.error('Operators: +  -  *  x  /  ÷  %  ^  sqrt');
 }
 
 function parseNumber(raw) {
@@ -69,6 +100,9 @@ function normalizeOperator(op) {
   op = String(op).trim();
   if (op === 'x' || op === 'X' || op === '×') return '*';
   if (op === '÷') return '/';
+  if (op === '%' || op.toLowerCase() === 'mod') return '%';
+  if (op === '^' || op.toLowerCase() === 'pow') return '^';
+  if (op.toLowerCase() === 'sqrt' || op === '√') return 'sqrt';
   return op;
 }
 
@@ -82,6 +116,12 @@ function compute(a, op, b) {
       return multiply(a, b);
     case '/':
       return divide(a, b);
+    case '%':
+      return modulo(a, b);
+    case '^':
+      return power(a, b);
+    case 'sqrt':
+      return squareRoot(a);
     default:
       throw new Error('Unsupported operator: ' + op);
   }
@@ -100,6 +140,17 @@ if (require.main === module) {
   if (argv.length === 3) {
     // positional: <a> <op> <b>
     [aArg, opArg, bArg] = argv;
+  } else if (argv.length === 2) {
+    // support unary positional like: sqrt 9  OR 9 sqrt
+    if (normalizeOperator(argv[0]) === 'sqrt') {
+      opArg = argv[0];
+      aArg = argv[1];
+    } else if (normalizeOperator(argv[1]) === 'sqrt') {
+      aArg = argv[0];
+      opArg = argv[1];
+    } else {
+      // fall back to flag parsing for other 2-arg cases
+    }
   } else {
     // parse flags
     for (let i = 0; i < argv.length; i++) {
