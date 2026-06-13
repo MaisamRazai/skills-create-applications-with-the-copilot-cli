@@ -75,4 +75,30 @@ describe('Calculator - basic operations', () => {
       expect(calc.add(0.1, 0.2)).to.be.closeTo(0.30000000000000004, 1e-12);
     });
   });
+
+  describe('Extended operations', () => {
+    it('modulo: 5 % 2 = 1', () => {
+      expect(calc.modulo(5, 2)).to.equal(1);
+    });
+
+    it('modulo throws on division by zero', () => {
+      expect(() => calc.modulo(1, 0)).to.throw(/Division by zero/);
+    });
+
+    it('power: 2 ^ 3 = 8', () => {
+      expect(calc.power(2, 3)).to.equal(8);
+    });
+
+    it('power with fractional exponent (4 ^ 0.5 = 2)', () => {
+      expect(calc.power(4, 0.5)).to.be.closeTo(2, 1e-12);
+    });
+
+    it('squareRoot: sqrt(16) = 4', () => {
+      expect(calc.squareRoot(16)).to.equal(4);
+    });
+
+    it('squareRoot throws on negative input', () => {
+      expect(() => calc.squareRoot(-9)).to.throw(/Square root of negative number/);
+    });
+  });
 });
