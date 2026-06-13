@@ -1,0 +1,11 @@
+{
+  "name": "skills-create-applications-with-the-copilot-cli",
+  "version": "1.0.0",
+  "description": "Exercise repo: Node.js CLI calculator",
+  "main": "src/calculator.js",
+  "scripts": {
+    "test": "node test/calculator.test.js"
+  },
+  "author": "",
+  "license": "MIT"
+}
